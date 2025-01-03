@@ -1,5 +1,4 @@
-
-ame: Deploy to Cloudflare Pages
+name: Deploy to Cloudflare Pages
 
 on:
   push:
