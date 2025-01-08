@@ -1,51 +1,90 @@
-# React + TypeScript + Vite
+# AI Image Generator Client
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A modern web application for generating AI-powered images using various models and providers.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- 🎨 Support for multiple AI image generation providers (OpenAI, Neko)
+- 🔄 Dynamic model selection based on provider
+- 📱 Responsive design with dark/light theme support
+- ⚡ Real-time generation status and cancellation
+- 🔒 Secure API key management
+- 🎯 Error handling and validation
 
-## Expanding the ESLint configuration
+## Tech Stack
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+- React 18 with TypeScript
+- Tailwind CSS for styling
+- Shadcn/UI components
+- Vite for build tooling
 
-- Configure the top-level `parserOptions` property like this:
+## Getting Started
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+### Prerequisites
+
+- Node.js 18+
+- Yarn package manager
+
+### Installation
+
+```bash
+# Install dependencies
+yarn install
+
+# Start development server
+yarn dev
+
+# Build for production
+yarn build
 ```
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+### Configuration
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
+The application requires API configuration for image generation services:
 
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
+1. Open the settings modal
+2. Configure your provider's base URL and API key
+3. Save settings (stored securely in cookies)
+
+## Architecture
+
+The application uses a service-based architecture with:
+
+- Interface-based design using `ImageService`
+- Provider-specific implementations (OpenAI, Neko)
+- Component-based UI with React
+- Cookie-based configuration storage
+- Cancellable request support
+
+## Project Structure
+
 ```
-# ai-generator-web-client
+src/
+├── atoms/          # State management
+├── components/     # React components
+├── hooks/          # Custom React hooks
+├── services/       # API integration
+│   ├── core/       # Core services
+│   └── providers/  # Provider implementations
+├── types/          # TypeScript types
+└── lib/           # Utility functions
+```
+
+## Development
+
+- Uses ESLint for code linting
+- TypeScript for type safety
+- Prettier for code formatting
+- Follows React best practices
+
+## Contributing
+
+1. Fork the repository
+2. Create your feature branch
+3. Commit your changes
+4. Push to the branch
+5. Open a Pull Request
+
+## License
+
+This project is licensed under the MIT License.

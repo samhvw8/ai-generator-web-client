@@ -12,18 +12,41 @@ import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { Settings } from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
+import { services, ServiceType } from '../services/imageService';
+import { getCookie, setCookie, updateApiSettings } from '../services/cookieUtils';
 
 interface SettingsModalProps {
   baseUrl: string;
   apiKey: string;
+  selectedService: ServiceType;
   onSave: (baseUrl: string, apiKey: string) => void;
+  onServiceChange: (service: ServiceType) => void;
   forceOpen?: boolean;
 }
 
-export function SettingsModal({ baseUrl, apiKey, onSave, forceOpen = false }: SettingsModalProps) {
+export function SettingsModal({ 
+  baseUrl, 
+  apiKey, 
+  selectedService,
+  onSave, 
+  onServiceChange,
+  forceOpen = false 
+}: SettingsModalProps) {
   const [localBaseUrl, setLocalBaseUrl] = useState(baseUrl);
   const [localApiKey, setLocalApiKey] = useState(apiKey);
   const [open, setOpen] = useState(forceOpen);
+
+  useEffect(() => {
+    // Load initial values from cookies
+    const storedService = getCookie('selectedService');
+    const storedBaseUrl = getCookie('baseUrl');
+    const storedApiKey = getCookie('apiKey');
+
+    if (storedService) onServiceChange(storedService as ServiceType);
+    if (storedBaseUrl) setLocalBaseUrl(storedBaseUrl);
+    if (storedApiKey) setLocalApiKey(storedApiKey);
+  }, []);
 
   useEffect(() => {
     if (forceOpen) {
@@ -32,6 +55,10 @@ export function SettingsModal({ baseUrl, apiKey, onSave, forceOpen = false }: Se
   }, [forceOpen]);
 
   const handleSave = () => {
+    // Save all settings to cookies
+    updateApiSettings('baseUrl', 'apiKey', localBaseUrl, localApiKey);
+    setCookie('selectedService', selectedService);
+    
     onSave(localBaseUrl, localApiKey);
     setOpen(false);
   };
@@ -57,6 +84,24 @@ export function SettingsModal({ baseUrl, apiKey, onSave, forceOpen = false }: Se
           )}
         </DialogHeader>
         <div className="grid gap-4 py-4">
+          <div className="grid gap-2">
+            <Label>Service</Label>
+            <Select
+              value={selectedService}
+              onValueChange={(value: ServiceType) => onServiceChange(value)}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Select service" />
+              </SelectTrigger>
+              <SelectContent>
+                {(Object.keys(services) as ServiceType[]).map((service) => (
+                  <SelectItem key={service} value={service}>
+                    {service}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
           <div className="grid gap-2">
             <Label htmlFor="baseUrl">API Base URL</Label>
             <Input

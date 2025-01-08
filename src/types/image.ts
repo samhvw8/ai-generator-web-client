@@ -1,12 +1,41 @@
-export type ImageStyle = 'vivid' | 'natural';
-export type ImageQuality = 'standard' | 'hd';
-export type ImageSize = '256x256' | '512x512' | '1024x1024' | '1792x1024' | '1024x1792';
-
 export interface ImageGenerationOptions {
   prompt: string;
   model: string;
-  style: ImageStyle;
-  quality: ImageQuality;
-  size: ImageSize;
   numberOfImages: number;
+  size: string;
+  quality: string;
+  style: string;
+}
+
+export interface MidjourneyButton {
+  customId: string;
+  label: string;
+  emoji: string;
+}
+
+export interface MidjourneySubmitResponse {
+  code: number;
+  description: string;
+  result: string;
+}
+
+export interface MidjourneyActionResponse {
+  code: number;
+  description: string;
+  result: string;
+}
+
+export interface MidjourneyTaskResponse {
+  id: string;
+  status: 'PENDING' | 'RUNNING' | 'SUCCESS' | 'FAILED';
+  imageUrl: string;
+  buttons: MidjourneyButton[];
+  failReason?: string;
+  progress?: string;
+}
+
+export interface GenerateImageResponse {
+  imageUrl: string;
+  buttons: MidjourneyButton[];
+  taskId: string;
 }

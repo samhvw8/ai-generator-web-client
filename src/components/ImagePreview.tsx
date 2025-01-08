@@ -20,17 +20,16 @@ export function ImagePreview({ isLoading, imageUrls }: ImagePreviewProps) {
           </div>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div className="flex flex-wrap justify-center gap-8 mx-auto max-w-5xl">
           {imageUrls.map((url, index) => (
             <div key={index} className="rounded-lg overflow-hidden shadow-xl bg-gray-50 dark:bg-gray-900/50">
-              <div className="relative">
+              <div className="relative flex items-center justify-center">
                 <img
                   src={url}
                   alt={`Generated ${index + 1}`}
-                  className="w-full h-auto object-cover max-h-[640px]"
+                  className="w-full h-auto object-contain max-h-[640px]"
                   loading="lazy"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent pointer-events-none" />
               </div>
             </div>
           ))}
