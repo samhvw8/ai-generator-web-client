@@ -1,4 +1,5 @@
 import { useState, FormEvent } from 'react';
+import { Loader2 } from 'lucide-react';
 import { ServiceType } from '../services/imageService';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
@@ -9,10 +10,11 @@ export interface ImageGeneratorFormProps {
   models: string[];
   isLoading: boolean;
   onSubmit: (options: ImageGenerationOptions) => void;
+  onCancel: () => void;
   selectedService: ServiceType;
 }
 
-export function ImageGeneratorForm({ models, isLoading, onSubmit, selectedService }: ImageGeneratorFormProps) {
+export function ImageGeneratorForm({ models, isLoading, onSubmit, onCancel, selectedService }: ImageGeneratorFormProps) {
   const [showAdvanced, setShowAdvanced] = useState(false);
   const [formData, setFormData] = useState<ImageGenerationOptions>({
     prompt: '',
@@ -169,8 +171,14 @@ export function ImageGeneratorForm({ models, isLoading, onSubmit, selectedServic
         </>
       )}
 
-      <Button type="submit" className="w-full" disabled={isLoading}>
-        {isLoading ? 'Generating...' : 'Generate'}
+      <Button
+        type={isLoading ? 'button' : 'submit'}
+        variant={isLoading ? 'destructive' : 'default'}
+        className={`w-full flex items-center justify-center gap-2 ${isLoading ? 'animate-in fade-in-50' : ''}`}
+        onClick={isLoading ? onCancel : undefined}
+      >
+        {isLoading && <Loader2 className="h-4 w-4 animate-spin" />}
+        {isLoading ? 'Cancel Generation' : 'Generate'}
       </Button>
     </form>
   );

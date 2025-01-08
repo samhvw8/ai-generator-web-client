@@ -28,21 +28,9 @@ export function ImageGeneratorControls({
         models={models}
         isLoading={isLoading || isLoadingModels}
         onSubmit={onGenerate}
+        onCancel={onCancel}
         selectedService={selectedService}
       />
-
-      {isLoading && (
-        <div className="flex justify-center">
-          <Button 
-            variant="destructive"
-            onClick={onCancel}
-            className="animate-in fade-in-50 flex items-center gap-2"
-          >
-            <Loader2 className="h-4 w-4 animate-spin" />
-            Cancel Generation
-          </Button>
-        </div>
-      )}
     </>
   );
 }
