@@ -1,11 +1,21 @@
 import { useAtom } from 'jotai';
 import { ImageGenerator } from './components/ImageGenerator';
 import { SettingsModal } from './components/SettingsModal';
-import { selectedServiceAtom, reloadTriggerAtom } from './atoms/imageGenerator';
+import { selectedServiceAtom, reloadTriggerAtom, baseUrlAtom, apiKeyAtom, forceSettingsOpenAtom } from './atoms/imageGenerator';
+import { useEffect } from 'react';
 
 function App() {
   const [selectedService] = useAtom(selectedServiceAtom);
   const [reloadTrigger] = useAtom(reloadTriggerAtom);
+  const [baseUrl] = useAtom(baseUrlAtom);
+  const [apiKey] = useAtom(apiKeyAtom);
+  const [, setForceOpen] = useAtom(forceSettingsOpenAtom);
+
+  useEffect(() => {
+    if (!baseUrl || !apiKey) {
+      setForceOpen(true);
+    }
+  }, [baseUrl, apiKey, setForceOpen]);
 
   return (
     <div className="min-h-screen bg-background min-w-full">
