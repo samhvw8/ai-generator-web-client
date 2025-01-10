@@ -14,39 +14,25 @@ import { Label } from "./ui/label";
 import { Settings } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
 import { services, ServiceType } from '../services/imageService';
-import { getCookie, setCookie, updateApiSettings } from '../services/cookieUtils';
 
-interface SettingsModalProps {
-  baseUrl: string;
-  apiKey: string;
-  selectedService: ServiceType;
-  onSave: (baseUrl: string, apiKey: string) => void;
-  onServiceChange: (service: ServiceType) => void;
-  forceOpen?: boolean;
-}
+import { useAtom } from 'jotai';
+import {
+  selectedServiceAtom,
+  baseUrlAtom,
+  apiKeyAtom,
+  forceSettingsOpenAtom,
+  reloadTriggerAtom
+} from '../atoms/imageGenerator';
 
-export function SettingsModal({ 
-  baseUrl, 
-  apiKey, 
-  selectedService,
-  onSave, 
-  onServiceChange,
-  forceOpen = false 
-}: SettingsModalProps) {
-  const [localBaseUrl, setLocalBaseUrl] = useState(baseUrl);
-  const [localApiKey, setLocalApiKey] = useState(apiKey);
-  const [open, setOpen] = useState(forceOpen);
+interface SettingsModalProps {}
 
-  useEffect(() => {
-    // Load initial values from cookies
-    const storedService = getCookie('selectedService');
-    const storedBaseUrl = getCookie('baseUrl');
-    const storedApiKey = getCookie('apiKey');
-
-    if (storedService) onServiceChange(storedService as ServiceType);
-    if (storedBaseUrl) setLocalBaseUrl(storedBaseUrl);
-    if (storedApiKey) setLocalApiKey(storedApiKey);
-  }, []);
+export function SettingsModal({}: SettingsModalProps) {
+  const [selectedService, setSelectedService] = useAtom(selectedServiceAtom);
+  const [baseUrl, setBaseUrl] = useAtom(baseUrlAtom);
+  const [apiKey, setApiKey] = useAtom(apiKeyAtom);
+  const [forceOpen, setForceOpen] = useAtom(forceSettingsOpenAtom);
+  const [open, setOpen] = useState(false);
+  const [reloadTrigger, setReloadTrigger] = useAtom(reloadTriggerAtom);
 
   useEffect(() => {
     if (forceOpen) {
@@ -55,12 +41,11 @@ export function SettingsModal({
   }, [forceOpen]);
 
   const handleSave = () => {
-    // Save all settings to cookies
-    updateApiSettings('baseUrl', 'apiKey', localBaseUrl, localApiKey);
-    setCookie('selectedService', selectedService);
+    // Trigger a reload
+    setReloadTrigger((prev: number) => prev + 1);
     
-    onSave(localBaseUrl, localApiKey);
     setOpen(false);
+    setForceOpen(false);
   };
 
   return (
@@ -88,7 +73,7 @@ export function SettingsModal({
             <Label>Service</Label>
             <Select
               value={selectedService}
-              onValueChange={(value: ServiceType) => onServiceChange(value)}
+              onValueChange={(value: ServiceType) => setSelectedService(value)}
             >
               <SelectTrigger>
                 <SelectValue placeholder="Select service" />
@@ -106,8 +91,8 @@ export function SettingsModal({
             <Label htmlFor="baseUrl">API Base URL</Label>
             <Input
               id="baseUrl"
-              value={localBaseUrl}
-              onChange={(e) => setLocalBaseUrl(e.target.value)}
+              value={baseUrl}
+              onChange={(e) => setBaseUrl(e.target.value)}
               placeholder="Enter API base URL"
               className="col-span-3"
             />
@@ -117,8 +102,8 @@ export function SettingsModal({
             <Input
               id="apiKey"
               type="password"
-              value={localApiKey}
-              onChange={(e) => setLocalApiKey(e.target.value)}
+              value={apiKey}
+              onChange={(e) => setApiKey(e.target.value)}
               placeholder="Enter API key"
               className="col-span-3"
             />

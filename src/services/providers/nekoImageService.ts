@@ -40,7 +40,11 @@ export class NekoImageService implements ImageService {
     return this.apiService.makeRequest<MidjourneyTaskResponse>(`/mj/task/${taskId}/fetch`);
   }
 
-  private async waitForTaskCompletion(taskId: string, signal?: AbortSignal): Promise<MidjourneyTaskResponse> {
+  private async waitForTaskCompletion(
+    taskId: string,
+    signal?: AbortSignal,
+    onProgress?: (progress: string) => void
+  ): Promise<MidjourneyTaskResponse> {
     const waitConfig = {
       minWaitTime: 2000,
       maxWaitTime: 10000,
@@ -84,15 +88,22 @@ export class NekoImageService implements ImageService {
       }
 
       previousProgress = taskStatus.progress ?? "";
+      if (onProgress && taskStatus.progress) {
+        onProgress(taskStatus.progress);
+      }
       await new Promise(resolve => setTimeout(resolve, currentWaitTime));
     }
   }
 
-  async generateImage(options: ImageGenerationOptions, signal?: AbortSignal): Promise<GenerateImageResponse> {
+  async generateImage(
+    options: ImageGenerationOptions,
+    signal?: AbortSignal,
+    onProgress?: (progress: string) => void
+  ): Promise<GenerateImageResponse> {
     const taskId = await this.submitImagine(options.prompt);
     this.currentTaskId = taskId;
 
-    const taskStatus = await this.waitForTaskCompletion(taskId, signal);
+    const taskStatus = await this.waitForTaskCompletion(taskId, signal, onProgress);
     
     return {
       imageUrl: taskStatus.imageUrl,

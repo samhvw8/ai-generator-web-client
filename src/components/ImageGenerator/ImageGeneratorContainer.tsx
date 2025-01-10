@@ -1,19 +1,14 @@
-import { useEffect, useRef } from 'react';
 import { useAtom } from 'jotai';
 import { Card, CardContent } from '../ui/card';
-import { services, ServiceType } from '../../services/imageService';
-import { ImageGenerationOptions } from '../../types/image';
+import { Progress } from '../ui/progress';
+import { ServiceType } from '../../services/imageService';
 import {
-  imageUrlsAtom,
-  isLoadingAtom,
   errorAtom,
   modelsAtom,
-  updateActionResultAtom,
-  resetGenerationAtom,
-  isOpenAIServiceAtom,
-  currentTaskIdAtom,
+  progressAtom,
 } from '../../atoms/imageGenerator';
 import { useModelLoader } from '../../hooks/useModelLoader';
+import { useImageGeneration } from '../../hooks/useImageGeneration';
 import { ImageGeneratorControls } from './ImageGeneratorControls';
 import { ImageGeneratorDisplay } from './ImageGeneratorDisplay';
 import { ImageGeneratorActions } from './ImageGeneratorActions';
@@ -24,113 +19,64 @@ interface ImageGeneratorContainerProps {
 }
 
 export function ImageGeneratorContainer({ reloadTrigger, selectedService }: ImageGeneratorContainerProps) {
-  const [, setImageUrls] = useAtom(imageUrlsAtom);
-  const [isLoading, setIsLoading] = useAtom(isLoadingAtom);
-  const [, setError] = useAtom(errorAtom);
+  const [error] = useAtom(errorAtom);
   const [models] = useAtom(modelsAtom);
-  const [isOpenAIService] = useAtom(isOpenAIServiceAtom);
-  const [currentTaskId] = useAtom(currentTaskIdAtom);
-  const [, resetGeneration] = useAtom(resetGenerationAtom);
-  const [, updateActionResult] = useAtom(updateActionResultAtom);
-  const abortController = useRef<AbortController | null>(null);
-
-  const currentService = services[selectedService];
+  const [progress] = useAtom(progressAtom);
+  
+  const {
+    generateImage,
+    submitAction,
+    cancelGeneration,
+    isLoading
+  } = useImageGeneration(selectedService);
 
   // Load models using custom hook
   useModelLoader(reloadTrigger, selectedService);
 
-  useEffect(() => {
-    return () => {
-      if (abortController.current) {
-        abortController.current.abort();
-      }
-    };
-  }, []);
-
-  const handleCancel = () => {
-    if (abortController.current) {
-      abortController.current.abort();
-      abortController.current = null;
-      setIsLoading(false);
-      setError('Image generation cancelled');
-    }
-  };
-
-  const handleAction = async (customId: string) => {
-    if (!('submitAction' in currentService)) return;
-    
-    if (abortController.current) {
-      abortController.current.abort();
-    }
-    abortController.current = new AbortController();
-    
-    setIsLoading(true);
-    setError('');
-    
-    try {
-      const result = await currentService.submitAction!(customId, currentTaskId, abortController.current.signal);
-      updateActionResult(result);
-    } catch (error) {
-      if (error instanceof Error && error.name === 'AbortError') {
-        return;
-      }
-      console.error('Error submitting action:', error);
-      setError('Failed to process action. Please try again.');
-    } finally {
-      setIsLoading(false);
-      abortController.current = null;
-    }
-  };
-
-  const handleGenerate = async (options: ImageGenerationOptions) => {
-    if (abortController.current) {
-      abortController.current.abort();
-    }
-
-    abortController.current = new AbortController();
-    setIsLoading(true);
-    resetGeneration();
-    
-    try {
-      const isMultiImageOpenAI = isOpenAIService && 
-        options.numberOfImages > 1 && 
-        options.model !== 'dall-e-3';
-
-      if (isMultiImageOpenAI) {
-        const results = await Promise.all(
-          Array.from({ length: options.numberOfImages }, () =>
-            currentService.generateImage(options, abortController.current!.signal)
-          )
-        );
-        setImageUrls(results.map(result => result.imageUrl));
-      } else {
-        const result = await currentService.generateImage(options, abortController.current.signal);
-        updateActionResult(result);
-      }
-    } catch (error) {
-      if (error instanceof Error && error.name === 'AbortError') {
-        return;
-      }
-      console.error('Error generating image:', error);
-      setError('Failed to generate image. Please try again.');
-    } finally {
-      setIsLoading(false);
-      abortController.current = null;
-    }
-  };
-
   return (
-    <div className="container mx-auto px-4 py-8">
-      <Card className="max-w-screen-xl mx-auto border-0 dark:bg-gray-800/50 backdrop-blur-sm">
+    <div className="container mx-auto px-4 py-8 transition-all duration-200">
+      <Card className="max-w-screen-xl mx-auto border-0 dark:bg-gray-800/50 backdrop-blur-sm shadow-lg transition-all duration-200">
         <CardContent className="space-y-6">
-          <ImageGeneratorControls
-            models={models}
-            selectedService={selectedService}
-            onGenerate={handleGenerate}
-            onCancel={handleCancel}
-          />
-          <ImageGeneratorDisplay />
-          <ImageGeneratorActions onAction={handleAction} />
+          <div className="space-y-4">
+            <ImageGeneratorControls
+              models={models}
+              selectedService={selectedService}
+              onGenerate={generateImage}
+              onCancel={cancelGeneration}
+            />
+            {/* Preserve space for progress bar to prevent layout shifts */}
+            <div className={`min-h-[4rem] transition-opacity duration-200 ${isLoading && progress.text ? 'opacity-100' : 'opacity-0'}`}>
+              {isLoading && progress.text && (
+                <div className="w-full space-y-2" role="status" aria-label="Generation Progress">
+                  <Progress
+                    value={progress.value}
+                    className="w-full"
+                    aria-valuemin={0}
+                    aria-valuemax={100}
+                    aria-valuenow={progress.value}
+                    aria-valuetext={progress.text}
+                  />
+                  <div className="text-center text-sm text-muted-foreground" aria-live="polite">
+                    {progress.text}
+                  </div>
+                </div>
+              )}
+            </div>
+            {/* Error message display */}
+            <div
+              className={`transition-opacity duration-200 ${error ? 'opacity-100' : 'opacity-0'}`}
+              role="alert"
+              aria-live="polite"
+            >
+              {error && (
+                <div className="p-4 rounded-lg bg-destructive/15 text-destructive dark:bg-destructive/10 dark:text-destructive-foreground">
+                  <p className="text-sm font-medium">{error}</p>
+                </div>
+              )}
+            </div>
+            <ImageGeneratorDisplay />
+            <ImageGeneratorActions onAction={submitAction} />
+          </div>
         </CardContent>
       </Card>
     </div>

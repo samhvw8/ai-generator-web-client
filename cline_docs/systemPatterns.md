@@ -2,45 +2,76 @@
 
 ## Architecture
 
+### State Management
+- Jotai for global state management
+  - `imageUrlsAtom`: Stores generated image URLs
+  - `isLoadingAtom`: Tracks generation status
+  - `errorAtom`: Manages error states
+  - `modelsAtom`: Available AI models
+  - `progressAtom`: Tracks generation progress
+  - `currentTaskIdAtom`: Manages task identification
+  - `resetGenerationAtom`: Handles state reset
+  - `updateActionResultAtom`: Manages action results
+  - `isOpenAIServiceAtom`: Service type indicator
+
+### Container Pattern
+The application implements a container pattern for the main image generator:
+- `ImageGeneratorContainer`: Smart component that:
+  - Manages state and business logic
+  - Handles image generation flow
+  - Controls progress updates
+  - Manages service interactions
+  - Coordinates child components
+- Child Components:
+  - `ImageGeneratorControls`: UI for generation options
+  - `ImageGeneratorDisplay`: Image display component
+  - `ImageGeneratorActions`: Action buttons component
+
 ### Image Generation Service Layer
 - Interface-based design using `ImageService` interface
 - Service implementations for different providers:
   - `OpenAiImageService`: OpenAI API integration
+    - Supports DALL-E 2 and 3
+    - Handles multiple image generation
+    - Progress tracking support
   - `NekoImageService`: Neko API integration
-- Default service instance with wrapper functions for backward compatibility
-- Cookie-based configuration storage per service
+    - Custom model support
+    - Progress tracking integration
+- Service factory pattern with `services` object
+- Type-safe service selection with `ServiceType`
 
-### Component Architecture
-- App.tsx: Top-level component managing API configuration
-- ImageGenerator: Main component handling image generation flow
-- ImageGeneratorForm: Form component for generation options
-- ImagePreview: Display component for generated images
+### Progress Tracking
+- Real-time progress visualization
+- Percentage extraction from progress text
+- Progress bar component integration
+- Service-agnostic progress updates
 
 ### Data Flow
 1. User configures API settings via SettingsModal
 2. Settings stored in cookies per service
-3. User inputs generation options in ImageGeneratorForm
-4. ImageGenerator handles generation via service layer
-5. Results displayed in ImagePreview component
-
-### State Management
-- React useState for component-level state
-- Cookie storage for API configuration
-- Props for component communication
+3. Container component loads models via useModelLoader
+4. User inputs generation options
+5. Container handles generation via selected service
+6. Progress updates shown in real-time
+7. Results displayed in ImageGeneratorDisplay
 
 ### Error Handling
 - Service-level error handling with custom error messages
 - Component-level error display
 - Request cancellation support via AbortController
+- Error state management through Jotai atoms
 
 ### API Integration
 - Separate service implementations per provider
 - Common interface ensuring consistent behavior
 - Configuration management per service
 - Request/response normalization
+- Progress tracking standardization
 
 ## Best Practices
 - Interface-driven development
+- Container pattern for complex components
+- Atomic state management with Jotai
 - Separation of concerns
 - Single responsibility principle
 - Dependency injection ready
@@ -48,3 +79,26 @@
 - Progressive enhancement
 - Responsive design
 - Dark mode support
+- Type safety with TypeScript
+- Real-time progress feedback
+- Cancellable operations
+
+## Code Organization
+```
+src/
+├── components/
+│   ├── ImageGenerator/
+│   │   ├── ImageGeneratorContainer.tsx   # Main container
+│   │   ├── ImageGeneratorControls.tsx    # Generation options
+│   │   ├── ImageGeneratorDisplay.tsx     # Image display
+│   │   └── ImageGeneratorActions.tsx     # Action buttons
+│   └── ui/                              # Shared UI components
+├── services/
+│   ├── providers/
+│   │   ├── openAiImageService.ts        # OpenAI implementation
+│   │   └── nekoImageService.ts          # Neko implementation
+│   └── imageService.ts                  # Service interface & factory
+├── atoms/
+│   └── imageGenerator.ts                # Jotai state atoms
+└── hooks/
+    └── useModelLoader.ts                # Model loading logic
