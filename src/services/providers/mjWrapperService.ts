@@ -3,13 +3,13 @@ import { ConfigurationService } from '../core/configurationService';
 import { ApiService } from '../core/apiService';
 import { ImageService } from '../types';
 
-export class NekoImageService implements ImageService {
+export class MjWrapperService implements ImageService {
   private configService: ConfigurationService;
   private apiService: ApiService;
   private currentTaskId: string | null = null;
 
   constructor() {
-    this.configService = new ConfigurationService('nekoBaseUrl', 'nekoApiKey');
+    this.configService = new ConfigurationService(['baseUrl', 'apiKey']);
     this.apiService = new ApiService(this.configService);
   }
 
@@ -18,7 +18,7 @@ export class NekoImageService implements ImageService {
   }
 
   async updateApiSettings(baseUrl: string, apiKey: string): Promise<void> {
-    await this.configService.updateApiSettings(baseUrl, apiKey);
+    await this.configService.updateApiSettings({ baseUrl, apiKey });
   }
 
   async fetchModels(): Promise<string[]> {

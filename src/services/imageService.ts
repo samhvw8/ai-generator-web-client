@@ -1,14 +1,14 @@
 import { OpenAiImageService } from './providers/openAiImageService';
-import { NekoImageService } from './providers/nekoImageService';
+import { MjWrapperService } from './providers/mjWrapperService';
 import type { ImageService } from './types';
 
 export * from './types';
 export * from './providers/openAiImageService';
-export * from './providers/nekoImageService';
+export * from './providers/mjWrapperService';
 
 export const services = {
   'OpenAI': new OpenAiImageService(),
-  'Neko': new NekoImageService()
+  'Midjourney': new MjWrapperService()
 } as const;
 
 export type ServiceType = keyof typeof services;
