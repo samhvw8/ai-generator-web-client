@@ -1,25 +1,45 @@
-import { ApiConfig, getStoredConfig, updateApiSettings as updateSettings } from '../cookieUtils';
+import { getDefaultStore } from 'jotai';
+import { baseUrlAtom, apiKeyAtom } from '../../atoms/imageGenerator';
+
+export type ConfigKey = string;
+export type ConfigValue = any;
+
+export type ApiConfig = Record<ConfigKey, ConfigValue>;
 
 export class ConfigurationService {
-  constructor(
-    private baseUrlKey: string,
-    private apiKeyKey: string
-  ) {}
+  private configKeys: string[];
+  private store = getDefaultStore();
+
+  constructor(configKeys: string[]) {
+    this.configKeys = configKeys;
+  }
 
   async getConfig(): Promise<ApiConfig> {
-    const config = await getStoredConfig(this.baseUrlKey, this.apiKeyKey);
-    if (!config) {
+    const baseUrl = this.store.get(baseUrlAtom);
+    const apiKey = this.store.get(apiKeyAtom);
+
+    if (!baseUrl || !apiKey) {
       throw new Error('API configuration not found. Please configure the API settings first.');
     }
-    return config;
+
+    return {
+      baseUrl,
+      apiKey
+    };
   }
 
   async isConfigured(): Promise<boolean> {
-    const config = await getStoredConfig(this.baseUrlKey, this.apiKeyKey);
-    return config !== null;
+    const config = await this.getConfig().catch(() => null);
+    return config !== null && this.configKeys.every(key => config[key] !== undefined);
   }
 
-  async updateApiSettings(baseUrl: string, apiKey: string): Promise<void> {
-    await updateSettings(this.baseUrlKey, this.apiKeyKey, baseUrl, apiKey);
+  async updateApiSettings(config: ApiConfig): Promise<void> {
+    // Validate that all required keys are present
+    if (!this.configKeys.every(key => key in config)) {
+      throw new Error(`Missing required configuration keys. Required: ${this.configKeys.join(', ')}`);
+    }
+
+    this.store.set(baseUrlAtom, config.baseUrl);
+    this.store.set(apiKeyAtom, config.apiKey);
   }
 }

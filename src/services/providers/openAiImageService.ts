@@ -8,7 +8,7 @@ export class OpenAiImageService implements ImageService {
   private apiService: ApiService;
 
   constructor() {
-    this.configService = new ConfigurationService('openAiBaseUrl', 'openAiApiKey');
+    this.configService = new ConfigurationService(['baseUrl', 'apiKey']);
     this.apiService = new ApiService(this.configService);
   }
 
@@ -17,7 +17,7 @@ export class OpenAiImageService implements ImageService {
   }
 
   async updateApiSettings(baseUrl: string, apiKey: string): Promise<void> {
-    await this.configService.updateApiSettings(baseUrl, apiKey);
+    await this.configService.updateApiSettings({ baseUrl, apiKey });
   }
 
   async fetchModels(): Promise<string[]> {
