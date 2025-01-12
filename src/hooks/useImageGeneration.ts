@@ -10,10 +10,14 @@ import {
   progressAtom,
   resetGenerationAtom,
   updateActionResultAtom,
+  taskStatusAtom,
 } from '../atoms/imageGenerator';
 import { useAbortController } from './useAbortController';
 
-export function useImageGeneration(selectedService: ServiceType) {
+export function useImageGeneration(
+  selectedService: ServiceType,
+  onProgress?: (taskId: string, progressText: string) => void
+) {
   const [, setImageUrls] = useAtom(imageUrlsAtom);
   const [isLoading, setIsLoading] = useAtom(isLoadingAtom);
   const [, setError] = useAtom(errorAtom);
@@ -22,6 +26,7 @@ export function useImageGeneration(selectedService: ServiceType) {
   const [, setProgress] = useAtom(progressAtom);
   const [, resetGeneration] = useAtom(resetGenerationAtom);
   const [, updateActionResult] = useAtom(updateActionResultAtom);
+  const [, setTaskStatus] = useAtom(taskStatusAtom);
   
   const { getSignal, abort } = useAbortController();
   const currentService = services[selectedService];
@@ -30,12 +35,23 @@ export function useImageGeneration(selectedService: ServiceType) {
     const percentMatch = progressText.match(/(\d+)%/);
     const progressValue = percentMatch ? parseInt(percentMatch[1], 10) : 0;
     setProgress({ value: progressValue, text: progressText });
+    
+    // Call the onProgress callback if provided
+    if (onProgress && currentTaskId) {
+      onProgress(currentTaskId, progressText);
+    }
   };
 
   const generateImage = async (options: ImageGenerationOptions) => {
     setIsLoading(true);
     resetGeneration();
     setProgress({ value: 0, text: '' });
+    setTaskStatus({
+      status: 'PENDING',
+      taskId: '',
+      progress: 'Initializing generation...',
+      estimatedWaitTime: undefined,
+    });
     
     try {
       const signal = getSignal();
@@ -57,13 +73,29 @@ export function useImageGeneration(selectedService: ServiceType) {
           handleProgress
         );
         updateActionResult(result);
+        setTaskStatus(prev => ({
+          ...prev,
+          status: 'SUCCESS',
+          progress: 'Generation completed successfully',
+        }));
       }
     } catch (error) {
       if (error instanceof Error && error.name === 'AbortError') {
+        setTaskStatus(prev => ({
+          ...prev,
+          status: 'FAILED',
+          failReason: 'Generation was cancelled'
+        }));
         return;
       }
       console.error('Error generating image:', error);
-      setError('Failed to generate image. Please try again.');
+      const errorMessage = error instanceof Error ? error.message : 'Failed to generate image. Please try again.';
+      setError(errorMessage);
+      setTaskStatus(prev => ({
+        ...prev,
+        status: 'FAILED',
+        failReason: errorMessage
+      }));
     } finally {
       setIsLoading(false);
     }
@@ -74,17 +106,39 @@ export function useImageGeneration(selectedService: ServiceType) {
     
     setIsLoading(true);
     setError('');
+    setTaskStatus({
+      status: 'PENDING',
+      taskId: currentTaskId,
+      progress: 'Processing action...',
+      estimatedWaitTime: undefined,
+    });
     
     try {
       const signal = getSignal();
       const result = await currentService.submitAction!(customId, currentTaskId, signal);
       updateActionResult(result);
+      setTaskStatus(prev => ({
+        ...prev,
+        status: 'SUCCESS',
+        progress: 'Action completed successfully',
+      }));
     } catch (error) {
       if (error instanceof Error && error.name === 'AbortError') {
+        setTaskStatus(prev => ({
+          ...prev,
+          status: 'FAILED',
+          failReason: 'Action was cancelled'
+        }));
         return;
       }
       console.error('Error submitting action:', error);
-      setError('Failed to process action. Please try again.');
+      const errorMessage = 'Failed to process action. Please try again.';
+      setError(errorMessage);
+      setTaskStatus(prev => ({
+        ...prev,
+        status: 'FAILED',
+        failReason: errorMessage
+      }));
     } finally {
       setIsLoading(false);
     }

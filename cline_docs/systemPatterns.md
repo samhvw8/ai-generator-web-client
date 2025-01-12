@@ -27,6 +27,22 @@ The application implements a container pattern for the main image generator:
   - `ImageGeneratorDisplay`: Image display component
   - `ImageGeneratorActions`: Action buttons component
 
+### Configuration System
+- Dynamic configuration using Record<string, any>
+- ConfigurationService pattern:
+  - Accepts array of required config keys
+  - Validates config completeness
+  - Type-safe config access
+  - Extensible for new config options
+- Per-service configuration:
+  - Service-specific storage atoms
+  - Dynamic atom selection based on service
+  - Persistent storage via atomWithStorage
+- Config validation:
+  - Required keys validation
+  - Runtime type checking
+  - Error handling for missing configs
+
 ### Image Generation Service Layer
 - Interface-based design using `ImageService` interface
 - Service implementations for different providers:
@@ -60,13 +76,15 @@ The application implements a container pattern for the main image generator:
 - Component-level error display
 - Request cancellation support via AbortController
 - Error state management through Jotai atoms
+- Configuration validation errors
 
 ### API Integration
 - Separate service implementations per provider
 - Common interface ensuring consistent behavior
-- Configuration management per service
+- Dynamic configuration management per service
 - Request/response normalization
 - Progress tracking standardization
+- Config validation and error handling
 
 ## Best Practices
 - Interface-driven development
@@ -82,6 +100,8 @@ The application implements a container pattern for the main image generator:
 - Type safety with TypeScript
 - Real-time progress feedback
 - Cancellable operations
+- Dynamic configuration management
+- Runtime validation
 
 ## Code Organization
 ```
@@ -94,6 +114,9 @@ src/
 │   │   └── ImageGeneratorActions.tsx     # Action buttons
 │   └── ui/                              # Shared UI components
 ├── services/
+│   ├── core/
+│   │   ├── configurationService.ts      # Dynamic config management
+│   │   └── apiService.ts                # API integration
 │   ├── providers/
 │   │   ├── openAiImageService.ts        # OpenAI implementation
 │   │   └── nekoImageService.ts          # Neko implementation

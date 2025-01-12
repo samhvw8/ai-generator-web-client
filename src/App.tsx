@@ -1,6 +1,6 @@
 import { useAtom } from 'jotai';
 import { ImageGenerator } from './components/ImageGenerator';
-import { SettingsModal } from './components/SettingsModal';
+import { SettingsModal } from './components/Settings/SettingsModal';
 import { selectedServiceAtom, reloadTriggerAtom, baseUrlAtom, apiKeyAtom, forceSettingsOpenAtom } from './atoms/imageGenerator';
 import { useEffect } from 'react';
 

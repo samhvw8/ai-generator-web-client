@@ -20,6 +20,7 @@
 - Mobile-responsive design requirements
 - Type-safe service implementations
 - Progress tracking requirements
+- Dynamic configuration validation
 
 ## State Management
 ### Jotai Atoms
@@ -42,6 +43,21 @@ isOpenAIServiceAtom: Atom<boolean>
 ```
 
 ## Service Layer Implementation
+### ConfigurationService
+```typescript
+export type ConfigKey = string;
+export type ConfigValue = any;
+
+export type ApiConfig = Record<ConfigKey, ConfigValue>;
+
+export class ConfigurationService {
+  constructor(configKeys: string[]);
+  getConfig(): Promise<ApiConfig>;
+  isConfigured(): Promise<boolean>;
+  updateApiSettings(config: ApiConfig): Promise<void>;
+}
+```
+
 ### ImageService Interface
 ```typescript
 interface ImageService {
@@ -69,6 +85,7 @@ interface ImageService {
    - Supports multiple image generation
    - Real-time progress tracking
    - Action submission support
+   - Dynamic configuration management
 
 2. NekoImageService
    - Compatible with Neko API
@@ -76,6 +93,7 @@ interface ImageService {
    - Handles parallel image generation
    - Progress tracking integration
    - Custom action handling
+   - Dynamic configuration management
 
 ### Progress Tracking
 - Real-time progress updates via callback
@@ -84,10 +102,14 @@ interface ImageService {
 - Service-agnostic implementation
 
 ### Configuration Management
+- Dynamic configuration using Record<string, any>
+- Required config keys validation
 - Cookie-based storage per service
 - Separate base URL and API key storage
 - Encrypted storage for sensitive data
 - Type-safe configuration handling
+- Runtime config validation
+- Extensible config structure
 
 ### Error Handling
 - Custom error types for API failures
@@ -95,6 +117,7 @@ interface ImageService {
 - Error message normalization
 - Type-safe error handling
 - Progress state error handling
+- Configuration validation errors
 
 ## Performance Considerations
 - Lazy loading of components
@@ -103,6 +126,7 @@ interface ImageService {
 - Parallel request handling for multiple images
 - Progress update throttling
 - State updates optimization
+- Configuration validation caching
 
 ## Security Measures
 - API keys stored in encrypted cookies
@@ -110,6 +134,7 @@ interface ImageService {
 - Request validation before submission
 - Sanitized error messages
 - Type-safe request handling
+- Configuration data encryption
 
 ## Future Technical Considerations
 - Service switching mechanism
@@ -121,6 +146,8 @@ interface ImageService {
 - Service discovery mechanism
 - Action result caching
 - Batch operation support
+- Configuration migration system
+- Config backup/restore mechanism
 
 ## Development Guidelines
 1. State Management
@@ -135,6 +162,7 @@ interface ImageService {
    - Handle cancellation properly
    - Normalize error messages
    - Type all responses
+   - Validate configuration
 
 3. Component Development
    - Follow container pattern
@@ -142,6 +170,7 @@ interface ImageService {
    - Handle loading states
    - Manage error states
    - Support cancellation
+   - Handle config updates
 
 4. Progress Tracking
    - Implement onProgress callback
@@ -149,3 +178,10 @@ interface ImageService {
    - Update progress state
    - Handle edge cases
    - Provide visual feedback
+
+5. Configuration Management
+   - Validate required keys
+   - Handle dynamic configs
+   - Implement type checking
+   - Secure sensitive data
+   - Support config extensions

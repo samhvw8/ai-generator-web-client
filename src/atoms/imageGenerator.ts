@@ -1,6 +1,6 @@
 import { atom } from 'jotai';
 import { atomWithStorage } from 'jotai/utils';
-import { MidjourneyButton } from '../types/image';
+import { MidjourneyButton, MidjourneyTaskResponse } from '../types/image';
 import { ServiceType } from '../services/imageService';
 
 export const imageUrlsAtom = atom<string[]>([]);
@@ -11,27 +11,48 @@ export const isLoadingModelsAtom = atom(false);
 export const currentTaskIdAtom = atom('');
 export const actionButtonsAtom = atom<MidjourneyButton[]>([]);
 
+// Task status atom to track detailed progress
+export const taskStatusAtom = atom<{
+  status: MidjourneyTaskResponse['status'];
+  taskId: string;
+  progress: string;
+  failReason?: string;
+  estimatedWaitTime?: number;
+}>({
+  status: 'PENDING',
+  taskId: '',
+  progress: '',
+  failReason: undefined,
+  estimatedWaitTime: undefined,
+});
+
+// Default base URLs for services
+export const DEFAULT_BASE_URLS: Record<ServiceType, string> = {
+  'OpenAI': 'https://api.openai.com/v1',
+  'Midjourney': 'https://api.midjourney.com'
+} as const;
+
 // Persisted atoms using atomWithStorage
 export const selectedServiceAtom = atomWithStorage<ServiceType>('selectedService', 'OpenAI');
 
 // Service-specific storage atoms
-const openAiBaseUrlStorage = atomWithStorage<string>('openAiBaseUrl', '');
+const openAiBaseUrlStorage = atomWithStorage<string>('openAiBaseUrl', DEFAULT_BASE_URLS['OpenAI']);
 const openAiApiKeyStorage = atomWithStorage<string>('openAiApiKey', '');
-const nekoBaseUrlStorage = atomWithStorage<string>('nekoBaseUrl', '');
-const nekoApiKeyStorage = atomWithStorage<string>('nekoApiKey', '');
+const mjBaseUrlStorage = atomWithStorage<string>('mjBaseUrl', DEFAULT_BASE_URLS['Midjourney']);
+const mjApiKeyStorage = atomWithStorage<string>('mjApiKey', '');
 
 // Dynamic atoms that select the correct storage based on service
 export const baseUrlAtom = atom(
-  (get) => get(get(selectedServiceAtom) === 'OpenAI' ? openAiBaseUrlStorage : nekoBaseUrlStorage),
+  (get) => get(get(selectedServiceAtom) === 'OpenAI' ? openAiBaseUrlStorage : mjBaseUrlStorage),
   (get, set, newValue: string) => {
-    set(get(selectedServiceAtom) === 'OpenAI' ? openAiBaseUrlStorage : nekoBaseUrlStorage, newValue);
+    set(get(selectedServiceAtom) === 'OpenAI' ? openAiBaseUrlStorage : mjBaseUrlStorage, newValue);
   }
 );
 
 export const apiKeyAtom = atom(
-  (get) => get(get(selectedServiceAtom) === 'OpenAI' ? openAiApiKeyStorage : nekoApiKeyStorage),
+  (get) => get(get(selectedServiceAtom) === 'OpenAI' ? openAiApiKeyStorage : mjApiKeyStorage),
   (get, set, newValue: string) => {
-    set(get(selectedServiceAtom) === 'OpenAI' ? openAiApiKeyStorage : nekoApiKeyStorage, newValue);
+    set(get(selectedServiceAtom) === 'OpenAI' ? openAiApiKeyStorage : mjApiKeyStorage, newValue);
   }
 );
 
@@ -60,6 +81,13 @@ export const resetGenerationAtom = atom(
     set(currentTaskIdAtom, '');
     set(errorAtom, '');
     set(progressAtom, { value: 0, text: '' });
+    set(taskStatusAtom, {
+      status: 'PENDING',
+      taskId: '',
+      progress: '',
+      failReason: undefined,
+      estimatedWaitTime: undefined,
+    });
   }
 );
 

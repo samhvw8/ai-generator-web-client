@@ -1,16 +1,17 @@
 import { useEffect } from 'react';
 import { useAtom } from 'jotai';
 import { ServiceType, services } from '../services/imageService';
-import { modelsAtom, isLoadingModelsAtom, errorAtom } from '../atoms/imageGenerator';
+import { modelsAtom, isLoadingModelsAtom, errorAtom, apiKeyAtom } from '../atoms/imageGenerator';
 
 export function useModelLoader(reloadTrigger: number, selectedService: ServiceType) {
   const [, setModels] = useAtom(modelsAtom);
   const [, setIsLoadingModels] = useAtom(isLoadingModelsAtom);
   const [, setError] = useAtom(errorAtom);
+  const [apiKey] = useAtom(apiKeyAtom);
 
   useEffect(() => {
     const loadModels = async () => {
-      if (selectedService !== 'OpenAI') {
+      if (selectedService !== 'OpenAI' || !apiKey) {
         setModels([]);
         return;
       }
