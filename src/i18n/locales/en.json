@@ -1,0 +1,103 @@
+{
+  "settings": {
+    "title": "Settings",
+    "theme": "Theme",
+    "language": "Language",
+    "welcome": "Welcome! Please configure your API settings to get started.",
+    "service": {
+      "label": "Service",
+      "tooltip": "Select the AI service provider for image generation"
+    },
+    "baseUrl": {
+      "label": "API Base URL",
+      "tooltip": "The base URL for the API service",
+      "default": "Default:"
+    },
+    "apiKey": {
+      "label": "API Key",
+      "tooltip": "Your authentication key for the selected service",
+      "placeholder": "Enter API key"
+    }
+  },
+  "imageGenerator": {
+    "prompt": "Enter your prompt",
+    "generate": "Generate",
+    "cancel": "Cancel",
+    "retry": "Retry",
+    "advanced": "Advanced Options",
+    "model": "Model",
+    "modelTooltip": "DALL-E 3 provides higher quality but only generates one image at a time",
+    "error": {
+      "failed": "Generation failed",
+      "tryAgain": "Please try again"
+    },
+    "progress": {
+      "generating": "Generating...",
+      "preparing": "Preparing..."
+    },
+    "status": {
+      "pending": "Pending",
+      "running": "Running",
+      "success": "Success",
+      "failed": "Failed",
+      "taskId": "Task ID:",
+      "estimatedWait": "Est. wait:"
+    },
+    "form": {
+      "numberOfImages": "Number of Images",
+      "advancedOptions": {
+        "show": "Show Advanced Options",
+        "hide": "Hide Advanced Options",
+        "size": "Size",
+        "quality": "Quality",
+        "style": "Style",
+        "sizeTooltip": "Choose image dimensions - affects composition and detail level",
+        "qualityTooltip": "HD offers more detail but costs more credits",
+        "styleTooltip": "Vivid creates more dramatic images, Natural is more photorealistic",
+        "sizeOptions": {
+          "square": "Square",
+          "portrait": "Portrait",
+          "landscape": "Landscape"
+        },
+        "qualityOptions": {
+          "standard": "Standard",
+          "hd": "HD"
+        },
+        "styleOptions": {
+          "vivid": "Vivid",
+          "natural": "Natural"
+        }
+      },
+      "prompt": {
+        "characterCount": "{{length}}/4000 characters",
+        "helpOpenAI": "Describe your image in detail. Include setting, lighting, perspective, and style.",
+        "helpMJ": "Add /imagine at the end of your prompt for best results.",
+        "placeholderOpenAI": "A serene lake at sunset with golden light reflecting off the water, mountains in the background...",
+        "placeholderMJ": "A magical forest with glowing mushrooms /imagine"
+      },
+      "actions": {
+        "cancelGeneration": "Cancel Generation"
+      }
+    },
+    "preview": {
+      "loading": "Generating your images...",
+      "imageAlt": "Generated image {number}",
+      "grid": "Generated images"
+    }
+  },
+  "common": {
+    "loading": "Loading...",
+    "save": "Save Changes",
+    "saving": "Saving...",
+    "cancel": "Cancel",
+    "select": {
+      "language": "Select language",
+      "service": "Select service",
+      "model": "Select a model",
+      "numberOfImages": "Select number of images",
+      "size": "Select size",
+      "quality": "Select quality",
+      "style": "Select style"
+    }
+  }
+}

@@ -1,0 +1,103 @@
+{
+  "settings": {
+    "title": "Cài đặt",
+    "theme": "Giao diện",
+    "language": "Ngôn ngữ",
+    "welcome": "Chào mừng! Vui lòng cấu hình cài đặt API để bắt đầu.",
+    "service": {
+      "label": "Dịch vụ",
+      "tooltip": "Chọn nhà cung cấp dịch vụ AI để tạo hình ảnh"
+    },
+    "baseUrl": {
+      "label": "URL API",
+      "tooltip": "URL cơ sở cho dịch vụ API",
+      "default": "Mặc định:"
+    },
+    "apiKey": {
+      "label": "Khóa API",
+      "tooltip": "Khóa xác thực của bạn cho dịch vụ đã chọn",
+      "placeholder": "Nhập khóa API"
+    }
+  },
+  "imageGenerator": {
+    "prompt": "Nhập mô tả",
+    "generate": "Tạo ảnh",
+    "cancel": "Hủy",
+    "retry": "Thử lại",
+    "advanced": "Tùy chọn nâng cao",
+    "model": "Model",
+    "modelTooltip": "DALL-E 3 cho chất lượng cao hơn nhưng chỉ tạo được một ảnh mỗi lần",
+    "error": {
+      "failed": "Tạo ảnh thất bại",
+      "tryAgain": "Vui lòng thử lại"
+    },
+    "progress": {
+      "generating": "Đang tạo...",
+      "preparing": "Đang chuẩn bị..."
+    },
+    "status": {
+      "pending": "Đang chờ",
+      "running": "Đang chạy",
+      "success": "Thành công",
+      "failed": "Thất bại",
+      "taskId": "Mã công việc:",
+      "estimatedWait": "Ước tính:"
+    },
+    "form": {
+      "numberOfImages": "Số lượng ảnh",
+      "advancedOptions": {
+        "show": "Hiện tùy chọn nâng cao",
+        "hide": "Ẩn tùy chọn nâng cao",
+        "size": "Kích thước",
+        "quality": "Chất lượng",
+        "style": "Phong cách",
+        "sizeTooltip": "Chọn kích thước hình ảnh - ảnh hưởng đến bố cục và mức độ chi tiết",
+        "qualityTooltip": "HD cho chi tiết tốt hơn nhưng tốn nhiều credits hơn",
+        "styleTooltip": "Sống động tạo hình ảnh ấn tượng hơn, Tự nhiên thì giống ảnh thật hơn",
+        "sizeOptions": {
+          "square": "Vuông",
+          "portrait": "Dọc",
+          "landscape": "Ngang"
+        },
+        "qualityOptions": {
+          "standard": "Tiêu chuẩn",
+          "hd": "HD"
+        },
+        "styleOptions": {
+          "vivid": "Sống động",
+          "natural": "Tự nhiên"
+        }
+      },
+      "prompt": {
+        "characterCount": "{{length}}/4000 ký tự",
+        "helpOpenAI": "Mô tả chi tiết hình ảnh của bạn. Bao gồm bối cảnh, ánh sáng, góc nhìn và phong cách.",
+        "helpMJ": "Thêm /imagine vào cuối mô tả để có kết quả tốt nhất.",
+        "placeholderOpenAI": "Một hồ nước yên bình lúc hoàng hôn với ánh vàng phản chiếu trên mặt nước, những ngọn núi phía xa...",
+        "placeholderMJ": "Khu rừng ma thuật với những cây nấm phát sáng /imagine"
+      },
+      "actions": {
+        "cancelGeneration": "Hủy tạo ảnh"
+      }
+    },
+    "preview": {
+      "loading": "Đang tạo ảnh của bạn...",
+      "imageAlt": "Ảnh đã tạo {number}",
+      "grid": "Các ảnh đã tạo"
+    }
+  },
+  "common": {
+    "loading": "Đang tải...",
+    "save": "Lưu thay đổi",
+    "saving": "Đang lưu...",
+    "cancel": "Hủy",
+    "select": {
+      "language": "Chọn ngôn ngữ",
+      "service": "Chọn dịch vụ",
+      "model": "Chọn model",
+      "numberOfImages": "Chọn số lượng ảnh",
+      "size": "Chọn kích thước",
+      "quality": "Chọn chất lượng",
+      "style": "Chọn phong cách"
+    }
+  }
+}
