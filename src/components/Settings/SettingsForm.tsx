@@ -5,6 +5,8 @@ import { Input } from '../ui/input';
 import { Info } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/tooltip';
+import { useTranslation } from 'react-i18next';
+import { useLanguage } from '../../hooks/useLanguage';
 
 interface SettingsFormProps {
   selectedService: ServiceType;
@@ -30,9 +32,41 @@ export function SettingsForm({
   validation,
   getDefaultBaseUrl
 }: SettingsFormProps) {
+  const { t } = useTranslation();
+  const { languages, currentLanguage, changeLanguage } = useLanguage();
+
   return (
     <div className="grid gap-6 py-4">
       <TooltipProvider>
+        <div className="grid gap-2">
+          <div className="flex items-center gap-2">
+            <Label className="required">{t('settings.language')}</Label>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Info className="h-4 w-4 text-muted-foreground cursor-help" />
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Select your preferred language</p>
+              </TooltipContent>
+            </Tooltip>
+          </div>
+          <Select
+            value={currentLanguage}
+            onValueChange={changeLanguage}
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="Select language" />
+            </SelectTrigger>
+            <SelectContent>
+              {languages.map((lang) => (
+                <SelectItem key={lang.code} value={lang.code}>
+                  {lang.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+
         <div className="grid gap-2">
           <div className="flex items-center gap-2">
             <Label className="required">Service</Label>

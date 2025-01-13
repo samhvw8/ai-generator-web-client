@@ -4,20 +4,22 @@ import { forceSettingsOpenAtom, apiKeyAtom } from '../../atoms/imageGenerator';
 import { useSettingsForm } from '../../hooks/useSettingsForm';
 import { Settings, AlertCircle } from "lucide-react";
 import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-  DialogClose,
-  DialogDescription,
-  DialogFooter,
-} from "../ui/dialog";
+  Drawer,
+  DrawerContent,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+  DrawerClose,
+  DrawerDescription,
+  DrawerFooter,
+} from "../ui/drawer";
 import { Button } from "../ui/button";
 import { Alert, AlertDescription } from "../ui/alert";
 import { SettingsForm } from "./SettingsForm";
+import { useTranslation } from "react-i18next";
 
 export function SettingsModal() {
+  const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   const [forceOpen, setForceOpen] = useAtom(forceSettingsOpenAtom);
   const {
@@ -49,29 +51,29 @@ export function SettingsModal() {
   };
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button 
-          variant="ghost" 
+    <Drawer open={open} onOpenChange={setOpen} direction="right">
+      <DrawerTrigger asChild>
+        <Button
+          variant="ghost"
           size="icon"
           className="bg-slate-100 hover:bg-slate-200 dark:hover:bg-slate-800 rounded-full w-8 h-8 text-slate-500 hover:text-slate-700 dark:text-slate-400"
         >
           <Settings className="h-[18px] w-[18px]" />
-          <span className="sr-only">Open settings</span>
+          <span className="sr-only">{t('settings.title')}</span>
         </Button>
-      </DialogTrigger>
-      <DialogContent className="sm:max-w-md">
-        <DialogHeader className="relative">
-          <DialogTitle className="text-xl flex items-center gap-2">
+      </DrawerTrigger>
+      <DrawerContent side="right">
+        <DrawerHeader className="relative">
+          <DrawerTitle className="text-xl flex items-center gap-2">
             <Settings className="h-5 w-5" />
-            Settings
-          </DialogTitle>
+            {t('settings.title')}
+          </DrawerTitle>
           {forceOpen && (
-            <DialogDescription>
-              Welcome! Please configure your API settings to get started.
-            </DialogDescription>
+            <DrawerDescription>
+              {t('settings.welcome')}
+            </DrawerDescription>
           )}
-        </DialogHeader>
+        </DrawerHeader>
 
         {error && (
           <Alert variant="destructive" className="my-2">
@@ -80,34 +82,36 @@ export function SettingsModal() {
           </Alert>
         )}
 
-        <SettingsForm
-          selectedService={selectedService}
-          setSelectedService={setSelectedService}
-          baseUrl={baseUrl}
-          setBaseUrl={setBaseUrl}
-          apiKey={apiKey}
-          setApiKey={setApiKey}
-          validation={validation}
-          getDefaultBaseUrl={getDefaultBaseUrl}
-        />
+        <div className="px-4">
+          <SettingsForm
+            selectedService={selectedService}
+            setSelectedService={setSelectedService}
+            baseUrl={baseUrl}
+            setBaseUrl={setBaseUrl}
+            apiKey={apiKey}
+            setApiKey={setApiKey}
+            validation={validation}
+            getDefaultBaseUrl={getDefaultBaseUrl}
+          />
+        </div>
 
-        <DialogFooter className="gap-2 sm:gap-0">
+        <DrawerFooter className="gap-2 sm:gap-0">
           {!forceOpen && (
-            <DialogClose asChild>
+            <DrawerClose asChild>
               <Button variant="outline">
-                Cancel
+                {t('common.cancel')}
               </Button>
-            </DialogClose>
+            </DrawerClose>
           )}
-          <Button 
+          <Button
             onClick={onSave}
             className="px-8"
             disabled={isLoading}
           >
-            {isLoading ? "Saving..." : "Save Changes"}
+            {isLoading ? t('common.saving') : t('common.save')}
           </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+        </DrawerFooter>
+      </DrawerContent>
+    </Drawer>
   );
 }
