@@ -1,51 +1,57 @@
 # Active Context
 
 ## Current Implementation Review
-Container pattern implementation with progress tracking and flexible configuration system
+- Container pattern with progress tracking and flexible configuration system
+- Settings management with SettingsForm and SettingsModal components
+- UI components using Shadcn/UI library
 
 ## Recent Changes
-1. Container Pattern Implementation:
-   - Created ImageGeneratorContainer as main smart component
-   - Implemented service-based image generation
-   - Added progress tracking with visual feedback
-   - Integrated cancellation support
-   - Added multi-image generation for OpenAI
+1. Settings Management:
+   - Added SettingsForm component for configuration
+   - Implemented SettingsModal for settings UI
+   - Added drawer component integration
+   - Enhanced configuration validation
 
-2. Progress Visualization:
-   - Added progress bar implementation
-   - Created Progress component in `src/components/ui/progress.tsx`
+2. Container Pattern Implementation:
+   - ImageGeneratorContainer as main smart component
+   - Service-based image generation
+   - Progress tracking with visual feedback
+   - Cancellation support
+   - Multi-image generation for OpenAI
+
+3. Progress Visualization:
+   - Progress bar implementation
+   - Progress component in `src/components/ui/progress.tsx`
    - Updated progressAtom to handle value and text
-   - Implemented percentage extraction from progress text
-   - Added real-time progress updates
+   - Percentage extraction from progress text
+   - Real-time progress updates
 
-3. Service Layer:
-   - Implemented ImageService interface
-   - Created OpenAiImageService and NekoImageService
-   - Added progress tracking support
-   - Implemented action submission
-   - Added type safety improvements
-
-4. State Management:
-   - Migrated to Jotai for global state
-   - Created atomic state management
-   - Implemented state reset functionality
-   - Added progress state handling
-   - Improved error state management
+4. Service Layer:
+   - ImageService interface implementation
+   - OpenAiImageService and NekoImageService
+   - Progress tracking support
+   - Action submission
+   - Type safety improvements
 
 5. Configuration System Refactoring:
-   - Updated ConfigurationService to use Record<string, any>
-   - Implemented dynamic config key validation
-   - Updated service providers to use new configuration API
-   - Maintained backward compatibility with existing atoms
+   - ConfigurationService using Record<string, any>
+   - Dynamic config key validation
+   - Service providers using new configuration API
+   - Backward compatibility with existing atoms
    - Enhanced type safety with config key validation
 
 ## Code Structure Analysis
+### Settings Components
+- SettingsForm: Configuration input handling
+- SettingsModal: Modal UI container
+- Drawer integration for responsive design
+
 ### ImageGeneratorContainer
 - Smart component managing generation flow
-- Handles service interaction
-- Manages progress updates
-- Controls child components
-- Implements cancellation
+- Service interaction handling
+- Progress update management
+- Child component control
+- Cancellation implementation
 
 ### Service Implementation
 - Interface-based design
@@ -57,65 +63,65 @@ Container pattern implementation with progress tracking and flexible configurati
 
 ## Potential Issues
 1. Service Integration:
-   - Need to test Neko API integration when endpoint is available
-   - May need to handle different progress formats
-   - Potential error format differences between providers
-   - Model name normalization across services
+   - Neko API integration testing needed
+   - Progress format handling variations
+   - Error format differences between providers
+   - Model name normalization
 
 2. Progress Tracking:
-   - Different services may provide varying progress formats
-   - Need to handle missing progress updates
-   - Edge cases in percentage extraction
-   - Progress update frequency optimization
+   - Service-specific progress formats
+   - Missing progress update handling
+   - Percentage extraction edge cases
+   - Update frequency optimization
 
 3. State Management:
-   - State reset during service switching
+   - Service switching state reset
    - Progress state cleanup
-   - Error state handling improvements
+   - Error state handling
    - Action result persistence
 
 4. Configuration Management:
-   - Need to validate config key consistency
-   - Handle dynamic config updates
-   - Ensure type safety for config values
-   - Manage config state persistence
+   - Config key consistency validation
+   - Dynamic config updates
+   - Type safety for config values
+   - Config state persistence
 
 ## Next Steps
 1. Service Enhancement:
-   - Implement comprehensive error handling
-   - Add retry mechanism for failed requests
-   - Standardize progress format across services
-   - Add service health checks
+   - Comprehensive error handling
+   - Retry mechanism for failed requests
+   - Progress format standardization
+   - Service health checks
 
 2. Progress Tracking:
-   - Improve progress text parsing
-   - Add progress update throttling
-   - Implement progress persistence
-   - Add progress error states
+   - Progress text parsing improvements
+   - Progress update throttling
+   - Progress persistence implementation
+   - Progress error state handling
 
-3. Container Improvements:
-   - Add loading state transitions
-   - Implement progress animation
-   - Add service switching logic
-   - Improve error feedback
+3. Settings Improvements:
+   - Enhanced validation feedback
+   - Real-time configuration testing
+   - Service-specific settings
+   - Settings migration support
 
 4. Testing:
-   - Add unit tests for container
-   - Test progress tracking
-   - Verify service implementations
-   - Test error scenarios
+   - Unit tests for settings components
+   - Progress tracking verification
+   - Service implementation testing
+   - Error scenario coverage
 
 5. Documentation:
-   - Update component documentation
-   - Add service integration guide
-   - Document progress tracking
-   - Add error handling guide
+   - Settings component documentation
+   - Service integration guide updates
+   - Progress tracking documentation
+   - Error handling documentation
 
 6. Configuration System:
-   - Add validation for config value types
-   - Implement config migration system
-   - Add config backup/restore
-   - Document config extension process
+   - Config value type validation
+   - Config migration system
+   - Config backup/restore
+   - Config extension documentation
 
 ## Technical Debt
 1. Progress Implementation:
