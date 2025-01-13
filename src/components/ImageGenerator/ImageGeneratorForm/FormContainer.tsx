@@ -1,5 +1,6 @@
 import { FormEvent } from 'react';
 import { Loader2 } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { Button } from '../../ui/button';
 import { Card, CardContent } from '../../ui/card';
 import { TooltipProvider } from '../../ui/tooltip';
@@ -34,6 +35,8 @@ export function FormContainer({
   updateFormData,
   toggleAdvanced
 }: FormContainerProps) {
+  const { t } = useTranslation();
+
   return (
     <TooltipProvider>
       <form onSubmit={onSubmit}>
@@ -56,14 +59,16 @@ export function FormContainer({
                 {!isDallE3 && (
                   <div>
                     <div className="flex items-center gap-2 mb-1">
-                      <label className="block text-sm font-medium">Number of Images</label>
+                      <label className="block text-sm font-medium">
+                        {t('imageGenerator.form.numberOfImages')}
+                      </label>
                     </div>
                     <Select
                       value={formData.numberOfImages.toString()}
                       onValueChange={(value: string) => updateFormData('numberOfImages', parseInt(value))}
                     >
                       <SelectTrigger>
-                        <SelectValue placeholder="Select number of images" />
+                        <SelectValue placeholder={t('common.select.numberOfImages')} />
                       </SelectTrigger>
                       <SelectContent>
                         {[1, 2, 3, 4].map((num) => (
@@ -83,7 +88,10 @@ export function FormContainer({
                     onClick={toggleAdvanced}
                     className="w-full"
                   >
-                    {showAdvanced ? 'Hide' : 'Show'} Advanced Options
+                    {t(showAdvanced 
+                      ? 'imageGenerator.form.advancedOptions.hide'
+                      : 'imageGenerator.form.advancedOptions.show'
+                    )}
                   </Button>
                 </div>
 
@@ -104,7 +112,10 @@ export function FormContainer({
               onClick={isLoading ? onCancel : undefined}
             >
               {isLoading && <Loader2 className="h-4 w-4 animate-spin" />}
-              {isLoading ? 'Cancel Generation' : 'Generate'}
+              {isLoading 
+                ? t('imageGenerator.form.actions.cancelGeneration')
+                : t('imageGenerator.generate')
+              }
             </Button>
           </CardContent>
         </Card>

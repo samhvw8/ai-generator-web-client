@@ -1,4 +1,5 @@
 import { HelpCircle } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { Textarea } from '../../ui/textarea';
 import { Tooltip, TooltipContent, TooltipTrigger } from '../../ui/tooltip';
 
@@ -9,30 +10,32 @@ interface PromptFieldProps {
 }
 
 export function PromptField({ prompt, isOpenAI, onChange }: PromptFieldProps) {
+  const { t } = useTranslation();
+
   return (
     <div>
       <div className="flex items-center justify-between mb-1">
         <div className="flex items-center gap-2">
-          <label className="block text-sm font-medium">Prompt</label>
+          <label className="block text-sm font-medium">{t('imageGenerator.prompt')}</label>
           <Tooltip>
             <TooltipTrigger asChild>
               <HelpCircle className="h-4 w-4 text-muted-foreground hover:text-foreground transition-colors" />
             </TooltipTrigger>
             <TooltipContent>
-              <p>{isOpenAI 
-                ? "Describe your image in detail. Include setting, lighting, perspective, and style." 
-                : "Add /imagine at the end of your prompt for best results."}</p>
+              <p>{isOpenAI
+                ? t('imageGenerator.form.prompt.helpOpenAI')
+                : t('imageGenerator.form.prompt.helpMJ')}</p>
             </TooltipContent>
           </Tooltip>
         </div>
         <span className="text-xs text-muted-foreground">
-          {prompt.length}/4000 characters
+          {t('imageGenerator.form.prompt.characterCount', { length: prompt.length })}
         </span>
       </div>
       <Textarea
-        placeholder={isOpenAI 
-          ? "A serene lake at sunset with golden light reflecting off the water, mountains in the background..." 
-          : "A magical forest with glowing mushrooms /imagine"}
+        placeholder={isOpenAI
+          ? t('imageGenerator.form.prompt.placeholderOpenAI')
+          : t('imageGenerator.form.prompt.placeholderMJ')}
         value={prompt}
         onChange={(e) => onChange(e.target.value)}
         required
@@ -41,9 +44,9 @@ export function PromptField({ prompt, isOpenAI, onChange }: PromptFieldProps) {
         className="resize-none transition-all duration-200 focus:shadow-md"
       />
       <p className="mt-1 text-xs text-muted-foreground">
-        {isOpenAI 
-          ? "Describe your image in detail. Include setting, lighting, perspective, and style." 
-          : "Add /imagine at the end of your prompt for best results."}
+        {isOpenAI
+          ? t('imageGenerator.form.prompt.helpOpenAI')
+          : t('imageGenerator.form.prompt.helpMJ')}
       </p>
     </div>
   );
