@@ -24,7 +24,7 @@ export function ImageGrid({ imageUrls }: ImageGridProps) {
               src={url}
               alt={t('imageGenerator.preview.imageAlt', { number: index + 1 })}
               className="w-full h-auto object-contain max-h-[640px]"
-              loading="lazy"
+              loading="eager"
             />
             <figcaption className="sr-only">
               {t('imageGenerator.preview.imageAlt', { number: index + 1 })}
